@@ -39,7 +39,7 @@ def parse_composio_search_results(composio_result: dict) -> dict:
             for member in cast_info:
                 cast_member = CastMember(
                     name=member.get("name", ""),
-                    role=member.get("extensions", ""),
+                    role=str(member.get("extensions", "")),
                 )
                 cast.append(cast_member)
 

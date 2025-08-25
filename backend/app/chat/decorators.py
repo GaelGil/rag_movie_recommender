@@ -8,11 +8,14 @@ def chat_service_required(f):
     def decorated(*args, **kwargs):
         # Get existing chat_session_id from Flask session
         # none if not set
+        user_id = session.get("user_id")
         chat_session_id = session.get("chat_session_id")
+
+        print(f"DEBUG chat_session_id: {chat_session_id}")
 
         # Create or load ChatService
         chat_service = ChatService(
-            user_id=session.get("user_id"),
+            user_id=user_id,
             session_id=chat_session_id,
         )
 

@@ -15,7 +15,7 @@ class CastMember(BaseModel):
 
 
 class Review(BaseModel):
-    rating: Optional[int]
+    rating: Optional[str]
     title: Optional[str]
     link: Optional[str]
 

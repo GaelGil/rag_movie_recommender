@@ -69,7 +69,7 @@ def recommend(query: str, top_k: int = 3):
 
 
 class ChatService:
-    def __init__(self, user_id: str, session_id: str):
+    def __init__(self, user_id: str, session_id: str = None):
         # self.app = app
         self.user_id = user_id
         self.composio_user_id = "0000-1111-2222"
@@ -89,6 +89,7 @@ class ChatService:
             self.chat_session = ChatSession(user_id=self.user_id)
             db.session.add(self.chat_session)
             db.session.commit()
+            self.session_id = self.chat_session.id
 
         # Initialize chat_history from DB
         self.chat_history = self.get_chat_history()
@@ -109,9 +110,12 @@ class ChatService:
         db.session.commit()
         self.chat_history = self.get_chat_history()
 
-    def add_tool_history(self, tool_name: str, tool_args: dict):
+    def add_tool_history(self, tool_name: str, tool_args: str, tool_output: str):
         tool_history = ToolHistory(
-            session_id=self.chat_session.id, tool_name=tool_name, tool_args=tool_args
+            session_id=self.chat_session.id,
+            tool_name=tool_name,
+            tool_args=tool_args,
+            tool_output=tool_output,
         )
         # with self.app.app_context():
         db.session.add(tool_history)
@@ -176,7 +180,7 @@ class ChatService:
                 return recommend(tool_args["query"], tool_args["top_k"])
             result = self.composio.tools.execute(
                 slug=tool_name,
-                user_id=self.user_id,
+                user_id=self.composio_user_id,
                 arguments=tool_args,
             )
             logger.info(f"Raw Composio result: {result}")
@@ -201,6 +205,7 @@ class ChatService:
             None
 
         """
+        logger.info(f"chat_session_id: {self.chat_session}")
         logger.info(f"[DEBUG] chat_history: {self.chat_history}")
         # add user message to chat history
         self.add_chat_history(role="user", message=message)
@@ -217,10 +222,10 @@ class ChatService:
 
         # keep track of tool calls
         tool_calls = {}
-
+        init_response = ""
         # initial call
         for event in stream:
-            print(
+            logger.info(
                 f"\n[DEBUG EVENT] type={event.type}, idx={getattr(event, 'output_index', None)}, delta={getattr(event, 'delta', None)}"
             )
 
@@ -229,7 +234,7 @@ class ChatService:
                 # yield the text
                 yield json.dumps({"type": "init_response", "text": event.delta})
                 logger.info(f"response.output_text.delta: {event.delta}")
-                print(event.delta, end="", flush=True)
+                init_response += event.delta
             # if there is no text, print a newline
             elif event.type == "response.output_text.done":
                 print()
@@ -298,13 +303,14 @@ class ChatService:
 
         logger.info(f"TOOL CALLS: {tool_calls}")
 
+        self.add_chat_history(role="assistant", message=init_response)
         # Execute the tool calls
         for tool_idx, tool in tool_calls.items():
             tool_name = tool["name"]
             args_str = tool["arguments"]
 
             if not tool_name:  # if tool name is None
-                print(f"[DEBUG] No tool name for idx={tool_idx}, skipping")
+                logger.info(f"[DEBUG] No tool name for idx={tool_idx}, skipping")
                 continue  # continue
 
             # try to parse the arguments
@@ -342,7 +348,7 @@ class ChatService:
             # Add the tool call result to the chat history
             self.add_chat_history(
                 role="assistant",
-                content=f"TOOL_NAME: {tool_name}, RESULT: {parsed_result}",
+                message=f"TOOL_NAME: {tool_name}, RESULT: {parsed_result}",
             )
 
         logger.info(f"[DEBUG] chat_history: {self.chat_history}")
@@ -358,7 +364,7 @@ class ChatService:
                 stream=True,
             )
 
-            print("Assistant (final): ", end="", flush=True)
+            final_response = ""
             # Stream partial text
             for ev in final_stream:
                 logger.info(
@@ -368,7 +374,8 @@ class ChatService:
                 if ev.type == "response.output_text.delta":
                     yield json.dumps({"type": "final_response", "text": ev.delta})
                     logger.info(ev.delta)
-                    print(ev.delta, end="", flush=True)
+                    final_response += ev.delta
                 # if there is no text, print a newline
                 elif ev.type == "response.output_text.done":
                     print()
+            self.add_chat_history(role="assistant", message=final_response)
