@@ -1,5 +1,6 @@
-from app.chat.utils.composio_tools import composio_tools
+from app.chat.utils.composio_tools import composio_tools as tools
 from app.chat.utils.prompts import CHATBOT_PROMPT
+from app.chat.models import ChatSession, ChatMessage, ToolHistory
 from app.chat.utils.formaters import (
     parse_composio_news_search_results,
     parse_composio_search_results,
@@ -68,26 +69,72 @@ def recommend(query: str, top_k: int = 3):
 
 
 class ChatService:
-    def __init__(self):
-        self.chat_history: list[dict] = []
-        self.model_name: str = "gpt-4.1-mini"
-        self.tools = composio_tools
+    def __init__(self, user_id: str, session_id: str):
+        # self.app = app
+        self.user_id = user_id
+        self.composio_user_id = "0000-1111-2222"
+        self.session_id = session_id
+        self.chat_session = None
+        self.model_name = "gpt-4.1-mini"
+        self.tools = tools
         self.composio = Composio()
-        self.user_id = "0000-1111-2222"
         self.llm: OpenAI = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+        # with self.app.app_context():
+        # Load existing chat session if session_id is provided
+        if self.session_id:
+            self.chat_session = ChatSession.query.get(self.session_id)
+        # If no session exists, create a new one
+        if not self.chat_session:
+            self.chat_session = ChatSession(user_id=self.user_id)
+            db.session.add(self.chat_session)
+            db.session.commit()
+
+        # Initialize chat_history from DB
+        self.chat_history = self.get_chat_history()
+        # Initialize tool_history from DB
+        self.tool_history = self.get_tool_history()
+
+        # Add initial developer prompt if history is empty
         if not self.chat_history:
             self.add_chat_history(role="developer", message=CHATBOT_PROMPT)
+            self.chat_history = self.get_chat_history()
 
     def add_chat_history(self, role: str, message: str):
-        """Adds a message to the chat history
+        chat_message = ChatMessage(
+            session_id=self.chat_session.id, role=role, content=message
+        )
+        # with self.app.app_context():
+        db.session.add(chat_message)
+        db.session.commit()
+        self.chat_history = self.get_chat_history()
 
-        Args:
-            role (str): The role of the message sender
-            message (str): The message content
-        Returns:
-            None
-        """
-        self.chat_history.append({"role": role, "content": message})
+    def add_tool_history(self, tool_name: str, tool_args: dict):
+        tool_history = ToolHistory(
+            session_id=self.chat_session.id, tool_name=tool_name, tool_args=tool_args
+        )
+        # with self.app.app_context():
+        db.session.add(tool_history)
+        db.session.commit()
+        self.tool_history = self.get_tool_history()
+
+    def get_tool_history(self):
+        # with self.app.app_context():
+        return [
+            {"tool_name": tool.tool_name, "tool_args": tool.tool_args}
+            for tool in ToolHistory.query.filter_by(
+                session_id=self.chat_session.id
+            ).order_by(ToolHistory.id)
+        ]
+
+    def get_chat_history(self):
+        # with self.app.app_context():
+        return [
+            {"role": msg.role, "content": msg.content}
+            for msg in ChatMessage.query.filter_by(
+                session_id=self.chat_session.id
+            ).order_by(ChatMessage.id)
+        ]
 
     def parse_result(self, tool_name: str, result: dict):
         """Parse the result of a tool call

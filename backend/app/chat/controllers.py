@@ -1,14 +1,15 @@
 from flask import Blueprint, jsonify, request, stream_with_context, Response
 from app.chat.services import ChatService
 from app.auth.decorators import login_required
+from app.chat.decorators import chat_service_required
 import sys
 import json
 
 chat = Blueprint("chat", __name__)
-chat_service = ChatService()
 
 
-def generate_response(message):
+@chat_service_required
+def generate_response(chat_service: ChatService, message: str):
     try:
         for chunk in chat_service.process_message(message):
             if isinstance(chunk, str):
@@ -18,23 +19,28 @@ def generate_response(message):
         yield f"data: {json.dumps({'type': 'error', 'text': str(e)})}\n\n"
 
 
-@chat.route("/message", methods=["GET"])
+@chat.route("/message/stream", methods=["POST"])
 @login_required
-def send_message():
-    message = request.args.get("message")  # ✅ read from query params for GET
-    if not message:
-        return jsonify({"error": "Message required"}), 400
+def send_message_stream():
+    try:
+        data = request.get_json()
+        message = data.get("message")
+        print(data)
+        print(message)
 
-    return Response(
-        stream_with_context(generate_response(message)),
-        content_type="text/event-stream",
-        headers={
-            "Cache-Control": "no-cache",
-            "Connection": "keep-alive",
-            "Access-Control-Allow-Origin": "http://localhost:5173",
-            "Access-Control-Allow-Credentials": "true",
-        },
-    )
+        if not message:
+            return jsonify({"error": "Message is required"}), 400
+
+        return Response(
+            stream_with_context(generate_response(message)),
+            content_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+            },
+        )
+    except Exception as e:
+        return jsonify({"error": f"Failed to process message: {str(e)}"}), 500
 
 
 @chat.route("/health", methods=["GET"])
