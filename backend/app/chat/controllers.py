@@ -25,9 +25,6 @@ def send_message_stream():
     try:
         data = request.get_json()
         message = data.get("message")
-        print(data)
-        print(message)
-
         if not message:
             return jsonify({"error": "Message is required"}), 400
 

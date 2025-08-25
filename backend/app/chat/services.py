@@ -340,12 +340,11 @@ class ChatService:
             logger.info(f"[DEBUG] Tool result for idx={tool_idx}: {parsed_result}")
 
             # Add the tool call result to the chat history
-            self.chat_history.append(
-                {
-                    "role": "assistant",
-                    "content": f"TOOL_NAME: {tool_name}, RESULT: {parsed_result}",
-                }
+            self.add_chat_history(
+                role="assistant",
+                content=f"TOOL_NAME: {tool_name}, RESULT: {parsed_result}",
             )
+
         logger.info(f"[DEBUG] chat_history: {self.chat_history}")
 
         # Get the final answer
