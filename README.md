@@ -19,6 +19,9 @@ Then you can go to local host and you should be able to chat
 
 # Demo
 
+Home Page
+![](./images/homepage.png "Home Page")
+
 Searching popular movies
 ![](./images/popular_movies_one.png "Initial Result")
 

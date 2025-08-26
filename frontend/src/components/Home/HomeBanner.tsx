@@ -14,10 +14,7 @@ const HomeBanner = () => {
                 {PROJECT_NAME}
               </h1>
               <p className="text-lg md:text-xl text-gray-700 mb-8">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                Itaque, quaerat minima ducimus doloribus dolore, inventore
-                impedit iste maxime temporibus earum beatae tenetur quisquam
-                enim reprehenderit rem necessitatibus eaque omnis deserunt.
+                Your Personal AI Movie Recommender
               </p>
 
               {!token ? (
@@ -30,7 +27,7 @@ const HomeBanner = () => {
                   }`}
                 >
                   <button className="px-10 py-4 text-lg font-bold rounded-lg bg-[#1976d2] text-white border-none shadow-md hover:shadow-lg transition">
-                    View Content
+                    Get Started
                   </button>
                 </Link>
               ) : (
