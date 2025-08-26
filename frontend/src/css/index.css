@@ -13,3 +13,19 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@layer base {
+  html {
+    @apply text-white;
+  }
+}
+
+@theme {
+  --color-primary-600: oklch(98.5% 0.001 106.423);
+  --color-secondary-300: oklch(84.5% 0.143 164.978);
+}
+
+body {
+  background-color: #ffff;
+  font-family: "Roboto", sans-serif;
+}

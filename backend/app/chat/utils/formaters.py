@@ -9,6 +9,7 @@ from app.chat.utils.schemas import (
     PopularMovies,
     PopularMovie,
     Headlines,
+    AIOverview,
 )
 import traceback
 
@@ -17,6 +18,18 @@ def parse_composio_search_results(composio_result: dict) -> dict:
     """Parse COMPOSIO_SEARCH_SEARCH results into UnifiedSearchResponse format."""
     try:
         search_data = composio_result.get("data", {}).get("results", {})
+        ai_overview = []
+        if "ai_overview" in search_data:
+            ai_overview_info = search_data.get("ai_overview", {}).get("refrences", [])
+            for item in ai_overview_info:
+                ai = AIOverview(
+                    index=item.get("index", ""),
+                    link=item.get("link", ""),
+                    snippet=item.get("snippet", ""),
+                    source=item.get("source", ""),
+                    title=item.get("title", ""),
+                )
+                ai_overview.append(ai)
         if "available_on" in search_data:
             available_on_info = search_data.get("available_on", [])
             knowledge = search_data.get("knowledge_graph", {})
@@ -65,6 +78,7 @@ def parse_composio_search_results(composio_result: dict) -> dict:
                 description=knowledge.get("description", ""),
                 reviews=reviews,
                 headlines=headlines,
+                ai_overview=ai_overview,
             )
             return movie_info.model_dump()
         else:
@@ -79,7 +93,10 @@ def parse_composio_search_results(composio_result: dict) -> dict:
                     general_info=movie.get("extensions", []),
                 )
                 popular_movies.append(mov)
-            popular_movies = PopularMovies(popular_movies=popular_movies)
+            popular_movies = PopularMovies(
+                popular_movies=popular_movies,
+                ai_overview=ai_overview,
+            )
             return popular_movies.model_dump()
 
         return

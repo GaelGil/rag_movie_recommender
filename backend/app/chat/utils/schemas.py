@@ -20,6 +20,14 @@ class Review(BaseModel):
     link: Optional[str]
 
 
+class AIOverview(BaseModel):
+    index: Optional[str]
+    link: Optional[str]
+    snippet: Optional[str]
+    source: Optional[str]
+    title: Optional[str]
+
+
 class PopularMovie(BaseModel):
     img: Optional[str]
     link: Optional[str]
@@ -29,6 +37,7 @@ class PopularMovie(BaseModel):
 
 class PopularMovies(BaseModel):
     popular_movies: List[PopularMovie]
+    ai_overview: List[AIOverview]
 
 
 class Headlines(BaseModel):
@@ -44,6 +53,7 @@ class MovieInfo(BaseModel):
     description: Optional[str]
     reviews: List[Review]
     headlines: List[Headlines]
+    ai_overview: List[AIOverview]
 
 
 class NewsSearchResults(BaseModel):
@@ -62,6 +72,7 @@ class VectorSearchResults(BaseModel):
 
 class SearchResults(BaseModel):
     results: List
+    ai_overview: List[AIOverview]
 
 
 class UnifiedSearchResponse(BaseModel):
