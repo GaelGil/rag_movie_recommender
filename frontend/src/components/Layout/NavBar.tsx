@@ -30,13 +30,13 @@ const Navigation = () => {
   return (
     <nav className="bg-white shadow-sm py-1">
       <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-2 text-decoration-none">
           <img
             src={PROJECT_LOGO}
             alt="Logo"
             className="w-24 h-12 object-contain"
           />
-          <span className="font-bold text-xl text-gray-800 no-underline">
+          <span className="font-bold text-xl text-primary-600 no-underline">
             {PROJECT_NAME}
           </span>
         </Link>
@@ -74,51 +74,26 @@ const Navigation = () => {
         {/* Desktop nav */}
         <div className="hidden md:flex md:items-center space-x-6 font-semibold text-lg">
           {!user ? (
-            <Link
-              to="/login"
-              className={`no-underline ${
-                location.pathname === "/chat"
-                  ? "text-blue-600"
-                  : "text-gray-700 hover:text-blue-600"
-              }`}
-            >
-              Chat
+            <Link className="text-decoration-none" to="/login">
+              <span className="text-primary-600">Chat</span>
             </Link>
           ) : (
-            <Link
-              to="/chat"
-              className={`no-underline${
-                location.pathname === "/chat"
-                  ? "text-blue-600 no-underline"
-                  : "text-gray-700 hover:text-blue-600 no-underline"
-              }`}
-            >
-              Chat
+            <Link className="text-decoration-none" to="/chat">
+              <span className="text-primary-600">Chat</span>
             </Link>
           )}
 
           {!user ? (
-            <Link
-              to="/login"
-              className={`no-underline ${
-                location.pathname === "/login"
-                  ? "text-blue-600"
-                  : "text-gray-700 hover:text-blue-600"
-              }`}
-            >
-              Log In
+            <Link className="text-decoration-none" to="/login">
+              <span className="text-primary-600">Log In</span>
             </Link>
           ) : (
             <Link
+              className="text-decoration-none"
               onClick={handleLogout}
               to="/"
-              className={`no-underline ${
-                location.pathname === "/login"
-                  ? "text-blue-600"
-                  : "text-gray-700 hover:text-blue-600"
-              }`}
             >
-              Log Out
+              <span className="text-primary-600"> Log Out</span>
             </Link>
           )}
         </div>
@@ -128,13 +103,9 @@ const Navigation = () => {
       {isOpen && (
         <div className="md:hidden px-4 pb-4 space-y-2 font-semibold text-lg">
           <Link
+            className="text-decoration-none"
             to="/orders"
             onClick={() => setIsOpen(false)}
-            className={`block ${
-              location.pathname === "/orders"
-                ? "text-blue-600"
-                : "text-gray-700 hover:text-blue-600"
-            }`}
           >
             Orders
           </Link>

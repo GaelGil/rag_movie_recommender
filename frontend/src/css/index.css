@@ -7,11 +7,11 @@
 }
 
 @theme {
-  --color-primary-600: oklch(98.5% 0.001 106.423);
-  --color-secondary-300: oklch(55.3% 0.013 58.071);
+  --color-primary-600: oklch(14.7% 0.004 49.25);
+  --color-secondary-300: oklch(37.4% 0.01 67.558);
 }
 
 body {
-  background-color: oklch(14.5% 0 0);
+  background-color: #ffff;
   font-family: "Roboto", sans-serif;
 }
