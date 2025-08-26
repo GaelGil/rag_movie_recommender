@@ -109,7 +109,18 @@ def parse_composio_news_search_results(composio_result: dict) -> dict:
     """Parse COMPOSIO_SEARCH_NEWS_SEARCH results into UnifiedSearchResponse format."""
     try:
         search_data = composio_result.get("data", {}).get("results", {})
-
+        ai_overview = []
+        if "ai_overview" in search_data:
+            ai_overview_info = search_data.get("ai_overview", {}).get("refrences", [])
+            for item in ai_overview_info:
+                ai = AIOverview(
+                    index=item.get("index", ""),
+                    link=item.get("link", ""),
+                    snippet=item.get("snippet", ""),
+                    source=item.get("source", ""),
+                    title=item.get("title", ""),
+                )
+                ai_overview.append(ai)
         # Parse News Results as Organic Results
         news_data = search_data.get("news_results", [])
         news = []
@@ -124,7 +135,7 @@ def parse_composio_news_search_results(composio_result: dict) -> dict:
                 position=str(news_item.get("position", "")),
             )
             news.append(result)
-        news_search_results = SearchResults(results=news)
+        news_search_results = SearchResults(results=news, ai_overview=ai_overview)
         return news_search_results.model_dump()
 
     except Exception as e:
