@@ -9,13 +9,22 @@ Additionally the chatbot is equipped with tools to search news or search google 
 
 # How to Run
 
-First ensure you set your OpenAI api key in the `.env` file in the `backend`. Then docker should take care of the rest
+First set up the Environment. In the backend you need to set up a .env file with the following
+
+```
+DATABASE_URL=
+OPENAI_API_KEY=
+COMPOSIO_API_KEY=
+```
+
+You can get the database url from the docker compose file.
+Then to run just do.
 
 ```sh
 docker compose up --build
 ```
 
-Then you can go to local host and you should be able to chat
+Then you can go to local host and you should be able to chat!
 
 # Demo
 

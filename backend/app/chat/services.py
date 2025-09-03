@@ -117,13 +117,11 @@ class ChatService:
             tool_args=tool_args,
             tool_output=tool_output,
         )
-        # with self.app.app_context():
         db.session.add(tool_history)
         db.session.commit()
         self.tool_history = self.get_tool_history()
 
     def get_tool_history(self):
-        # with self.app.app_context():
         return [
             {"tool_name": tool.tool_name, "tool_args": tool.tool_args}
             for tool in ToolHistory.query.filter_by(
@@ -132,68 +130,12 @@ class ChatService:
         ]
 
     def get_chat_history(self):
-        # with self.app.app_context():
         return [
             {"role": msg.role, "content": msg.content}
             for msg in ChatMessage.query.filter_by(
                 session_id=self.chat_session.id
             ).order_by(ChatMessage.id)
         ]
-
-    def parse_result(self, tool_name: str, result: dict):
-        """Parse the result of a tool call
-
-        Args:
-            result (dict): The result of a tool call
-
-        Returns:
-            dict: The parsed result
-        """
-        if "news" in tool_name.lower():
-            parsed_result = parse_composio_news_search_results(result)
-            logger.info("Used news search parser")
-        elif "movies" in tool_name.lower():
-            parsed_result = parse_vector_search_results(result)
-            logger.info("Used vector search parser")
-        else:
-            parsed_result = parse_composio_search_results(result)
-            logger.info("Used general search parser")
-        return parsed_result
-
-    def execute_tool(self, tool_name: str, tool_args: dict):
-        """Execute a tool
-
-        Args:
-            tool_name (str): The name of the tool to execute
-            tool_args (dict): The arguments to pass to the tool
-
-        Returns:
-            Any: The result of the tool
-
-        """
-        logger.info(f"Executing tool: {tool_name} with args: {tool_args}")
-        logger.info(
-            f"Tool Name Type {type(tool_name)}, Tool Args Type {type(tool_args)}"
-        )
-        try:
-            if tool_name == "recommend_movies":
-                return recommend(tool_args["query"], tool_args["top_k"])
-            result = self.composio.tools.execute(
-                slug=tool_name,
-                user_id=self.composio_user_id,
-                arguments=tool_args,
-            )
-            logger.info(f"Raw Composio result: {result}")
-            logger.info(f"Composio result type: {type(result)}")
-            return result
-        except Exception as e:
-            error_msg = f"Tool execution failed: {str(e)}"
-            logger.info("!!! TOOL EXECUTION EXCEPTION !!!")
-            logger.info(f"Error type: {type(e).__name__}")
-            logger.info(f"Error message: {str(e)}")
-            logger.info(f"Traceback: {traceback.format_exc()}")
-
-            return {"error": error_msg}
 
     def process_message(self, message):
         """Processes a message
@@ -379,3 +321,58 @@ class ChatService:
                 elif ev.type == "response.output_text.done":
                     print()
             self.add_chat_history(role="assistant", message=final_response)
+
+    def parse_result(self, tool_name: str, result: dict):
+        """Parse the result of a tool call
+
+        Args:
+            result (dict): The result of a tool call
+
+        Returns:
+            dict: The parsed result
+        """
+        if "news" in tool_name.lower():
+            parsed_result = parse_composio_news_search_results(result)
+            logger.info("Used news search parser")
+        elif "movies" in tool_name.lower():
+            parsed_result = parse_vector_search_results(result)
+            logger.info("Used vector search parser")
+        else:
+            parsed_result = parse_composio_search_results(result)
+            logger.info("Used general search parser")
+        return parsed_result
+
+    def execute_tool(self, tool_name: str, tool_args: dict):
+        """Execute a tool
+
+        Args:
+            tool_name (str): The name of the tool to execute
+            tool_args (dict): The arguments to pass to the tool
+
+        Returns:
+            Any: The result of the tool
+
+        """
+        logger.info(f"Executing tool: {tool_name} with args: {tool_args}")
+        logger.info(
+            f"Tool Name Type {type(tool_name)}, Tool Args Type {type(tool_args)}"
+        )
+        try:
+            if tool_name == "recommend_movies":
+                return recommend(tool_args["query"], tool_args["top_k"])
+            result = self.composio.tools.execute(
+                slug=tool_name,
+                user_id=self.composio_user_id,
+                arguments=tool_args,
+            )
+            logger.info(f"Raw Composio result: {result}")
+            logger.info(f"Composio result type: {type(result)}")
+            return result
+        except Exception as e:
+            error_msg = f"Tool execution failed: {str(e)}"
+            logger.info("!!! TOOL EXECUTION EXCEPTION !!!")
+            logger.info(f"Error type: {type(e).__name__}")
+            logger.info(f"Error message: {str(e)}")
+            logger.info(f"Traceback: {traceback.format_exc()}")
+
+            return {"error": error_msg}
