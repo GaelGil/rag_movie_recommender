@@ -10,7 +10,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
   onSubmit,
 }) => (
   <form onSubmit={onSubmit} className="p-6  space-y-4 max-w-md mx-auto">
-    <label className="block font-semibold text-primary-600">Username</label>
+    <label className="block font-semibold ">Username</label>
     <input
       type="text"
       name="username"
@@ -22,7 +22,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
 
     {!isLogin && (
       <>
-        <label className="block font-semibold text-primary-600">Email</label>
+        <label className="block font-semibold">Email</label>
         <input
           type="text"
           name="email"
@@ -34,7 +34,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
       </>
     )}
 
-    <label className="block font-semibold text-primary-600">Password</label>
+    <label className="block font-semibold ">Password</label>
     <input
       type="text"
       name="password"
@@ -46,7 +46,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
 
     <button
       type="submit"
-      className=" w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition"
+      className="my-4 w-full bg-black text-white font-semibold py-2 px-4 rounded transition"
     >
       {isLogin ? "Login" : "Sign Up"}
     </button>
