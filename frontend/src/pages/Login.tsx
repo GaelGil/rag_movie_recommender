@@ -8,7 +8,7 @@ const LogInPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const { setUser } = useUser();
   const navigate = useNavigate();
 
@@ -71,6 +71,7 @@ const LogInPage = () => {
           Sign Up
         </p>
       </div>
+      {loading && <p>Logging in ...</p>}
       {message && <p className="text-danger">{message}</p>}
     </div>
   );
