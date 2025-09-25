@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { PROJECT_NAME } from "../../data/ProjectName";
 import { PROJECT_LOGO } from "../../data/ProjectLogo";
+import { useUser } from "../../context/UserContext";
 const HomeBanner = () => {
-  const token = localStorage.getItem("token");
+  const { user } = useUser();
   return (
     <>
       <div className="min-h-[80vh] flex items-center justify-center bg-gradient-to-r from-[#e3f0ff] to-[#f8fafd]">
@@ -17,28 +18,14 @@ const HomeBanner = () => {
                 Your Personal AI Movie Recommender
               </p>
 
-              {!token ? (
-                <Link
-                  to="/login"
-                  className={`no-underline ${
-                    location.pathname === "/login"
-                      ? "text-blue-600"
-                      : "text-gray-700 hover:text-blue-600"
-                  }`}
-                >
-                  <button className="px-10 py-4 text-lg font-bold rounded-lg bg-[#1976d2] text-white border-none shadow-md hover:shadow-lg transition">
+              {!user ? (
+                <Link to="/auth/login" className="no-underline ">
+                  <button className="px-10 py-4 text-lg font-bold rounded bg-black text-white border-none shadow-md hover:shadow-lg transition">
                     Get Started
                   </button>
                 </Link>
               ) : (
-                <Link
-                  to="/content"
-                  className={` no-underline${
-                    location.pathname === "/content"
-                      ? "text-blue-600"
-                      : "text-gray-700 hover:text-blue-600"
-                  }`}
-                >
+                <Link to="/chat" className="no-underline">
                   <button className="px-10 py-4 text-lg font-bold rounded-lg bg-[#1976d2] text-white border-none shadow-md hover:shadow-lg transition">
                     View Content
                   </button>

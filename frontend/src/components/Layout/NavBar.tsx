@@ -73,7 +73,7 @@ const Navigation = () => {
         {/* Desktop nav */}
         <div className="hidden md:flex md:items-center space-x-6 font-semibold text-lg">
           {!user ? (
-            <Link className="text-decoration-none" to="/login">
+            <Link className="text-decoration-none" to="/auth/login">
               <span className="text-primary-600">Chat</span>
             </Link>
           ) : (
