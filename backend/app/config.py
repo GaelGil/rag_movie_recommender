@@ -12,3 +12,8 @@ class Config:
     SESSION_COOKIE_SAMESITE = "Lax"
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SECURE = False
+
+    FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173")
+    CORS_ALLOWED_ORIGINS = os.environ.get("CORS_ALLOWED_ORIGINS", FRONTEND_URL).split(
+        ","
+    )
