@@ -272,9 +272,6 @@ const ChatInterface = () => {
       // event handler mapping (mimics your fetchEventSource handlers)
       const onParsed = (parsed: any) => {
         if (!parsed || typeof parsed !== "object") return;
-        console.log("SSE chunk:", parsed);
-        console.log("SSE chunk type", parsed.type);
-        console.log("SSE chunk text", parsed.text);
 
         switch (parsed.type) {
           case "init_response":
@@ -337,16 +334,16 @@ const ChatInterface = () => {
   };
 
   return (
-    <div className="bg-white">
+    <div>
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto px-8 py-6 space-y-6">
           {messages.length === 0 && (
             <div className="text-center py-16">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-3">
-                I am your personal AI assistant
+              <h2 className="text-2xl font-semibold mb-3">
+                I am your personal movie recommender
               </h2>
-              <p className="text-gray-600 mb-2 max-w-md mx-auto">
-                Ask Anything
+              <p className=" mb-2 max-w-md mx-auto">
+                Ask me anything about movies!
               </p>
             </div>
           )}
@@ -358,7 +355,7 @@ const ChatInterface = () => {
         </div>
       </div>
 
-      <div className="border-t border-gray-100 bg-white">
+      <div className="border-t border-gray-100">
         <div className="max-w-4xl mx-auto px-8 py-6">
           <ChatInput onSendMessage={sendMessage} disabled={isLoading} />
         </div>

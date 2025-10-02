@@ -23,13 +23,13 @@ const router = createBrowserRouter([
     element: <SignUpPage />,
   },
   {
+    path: "/chat",
+    element: <Chat />,
+  },
+  {
     // Protected routes wrapper
     element: <PrivateRoute />,
     children: [
-      {
-        path: "/chat",
-        element: <Chat />,
-      },
       {
         path: "/profile/:userId",
         element: <ProfilePage />,

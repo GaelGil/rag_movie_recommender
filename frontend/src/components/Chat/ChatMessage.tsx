@@ -2,8 +2,6 @@
 import ToolBlock from "./ToolBlock";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import type { ChatMessageProps } from "../../types/Chat";
 
 const ChatMessage = ({ message }: ChatMessageProps) => {
@@ -30,7 +28,7 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
 
   return (
     <div className="flex justify-start">
-      <div className="max-w-[85%] bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="max-w-[85%] rounded-lg border border-gray-200 overflow-hidden">
         {hasBlocks ? (
           <div className="space-y-0">
             {blocks.map((block, idx) => {
