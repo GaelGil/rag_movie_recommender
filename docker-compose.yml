@@ -16,17 +16,31 @@ services:
       retries: 5
 
   backend:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     ports:
-      - "5000:5000"
+      - "8000:8000"
     volumes:
       - ./backend:/app
     env_file:
       - ./backend/.env
     environment:
-      FLASK_ENV: development
-      FLASK_APP: main.py
+      - ENVIRONMENT=local
+      # Python debugging
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      # FastAPI debugging
+      - DEBUG=1
 
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+    # Keep container running for debugging
+    tty: true
+    stdin_open: true
     depends_on:
       db:
         condition: service_healthy
