@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import { PROJECT_NAME } from "../../data/ProjectName";
 import { PROJECT_LOGO } from "../../data/ProjectLogo";
-import { useUser } from "../../context/UserContext";
+// import { useUser } from "../../context/UserContext";
 const HomeBanner = () => {
-  const { user } = useUser();
+  // const { user } = useUser();
   return (
     <>
       <div className="min-h-[80vh] flex items-center justify-center bg-gradient-to-r from-[#e3f0ff] to-[#f8fafd]">
@@ -18,19 +18,19 @@ const HomeBanner = () => {
                 Your Personal AI Movie Recommender
               </p>
 
-              {!user ? (
+              {/* {!user ? (
                 <Link to="/auth/login" className="no-underline ">
                   <button className="px-10 py-4 text-lg font-bold rounded bg-black text-white border-none shadow-md hover:shadow-lg transition">
                     Get Started
                   </button>
                 </Link>
-              ) : (
-                <Link to="/chat" className="no-underline">
-                  <button className="px-10 py-4 text-lg font-bold rounded-lg bg-[#1976d2] text-white border-none shadow-md hover:shadow-lg transition">
-                    View Content
-                  </button>
-                </Link>
-              )}
+              ) : ( */}
+              <Link to="/chat" className="no-underline">
+                <button className="px-10 py-4 text-lg font-bold rounded-lg bg-[#1976d2] text-white border-none shadow-md hover:shadow-lg transition">
+                  View Content
+                </button>
+              </Link>
+              {/* )} */}
             </div>
 
             {/* Right image */}
