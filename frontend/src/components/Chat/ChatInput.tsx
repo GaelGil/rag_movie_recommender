@@ -21,7 +21,7 @@ const ChatInput = ({ onSendMessage, disabled = false }: ChatInputProps) => {
   };
 
   return (
-    <Box pos="fixed" bottom={"5%"} left={"25%"} w="50%" mx="auto">
+    <Box>
       <Textarea
         value={message}
         onChange={(e) => setMessage(e.target.value)}
@@ -32,7 +32,6 @@ const ChatInput = ({ onSendMessage, disabled = false }: ChatInputProps) => {
         radius="xl"
         autosize
         minRows={3}
-        w="100%"
         size="xl"
       />
       {message ? (
