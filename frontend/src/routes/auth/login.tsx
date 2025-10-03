@@ -70,7 +70,7 @@ function LogIn() {
 
           <Text ta="center" size="sm">
             Don&apos;t have an account?{" "}
-            <RouterLink to="/auth/login" color="blue">
+            <RouterLink to="/auth/signup" color="blue">
               Sign Up
             </RouterLink>
           </Text>

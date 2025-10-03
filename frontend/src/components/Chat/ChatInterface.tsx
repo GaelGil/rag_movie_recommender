@@ -4,6 +4,8 @@ import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
 import { BASE_URL } from "../../api/url";
 import type { Message, ChatBlock } from "../../types/Chat";
+import ChatWelcome from "./ChatWelcome";
+import { Container } from "@mantine/core";
 
 const ChatInterface = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -334,33 +336,22 @@ const ChatInterface = () => {
   };
 
   return (
-    <div>
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto px-8 py-6 space-y-6">
-          {messages.length === 0 && (
-            <div className="text-center py-16">
-              <h2 className="text-2xl font-semibold mb-3">
-                I am your personal movie recommender
-              </h2>
-              <p className=" mb-2 max-w-md mx-auto">
-                Ask me anything about movies!
-              </p>
-            </div>
-          )}
+    <>
+      <Container>
+        {messages.length === 0 && <ChatWelcome />}
 
-          {messages.map((message) => (
-            <ChatMessage key={message.id} message={message} />
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
-      </div>
+        {messages.map((message) => (
+          <ChatMessage key={message.id} message={message} />
+        ))}
+        <Container ref={messagesEndRef} />
+      </Container>
 
-      <div className="border-t border-gray-100">
-        <div className="max-w-4xl mx-auto px-8 py-6">
-          <ChatInput onSendMessage={sendMessage} disabled={isLoading} />
-        </div>
-      </div>
-    </div>
+      {/* <div className="border-t border-gray-100"> */}
+      {/* <div className="max-w-4xl mx-auto px-8 py-6"> */}
+      <ChatInput onSendMessage={sendMessage} disabled={isLoading} />
+      {/* </div> */}
+      {/* </div> */}
+    </>
   );
 };
 

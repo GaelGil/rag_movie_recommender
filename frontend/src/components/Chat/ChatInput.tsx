@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { Box, Textarea, Loader, Button } from "@mantine/core";
 import type { ChatInputProps } from "../../types/Chat";
+import { FiArrowUp } from "react-icons/fi";
 
 const ChatInput = ({ onSendMessage, disabled = false }: ChatInputProps) => {
   const [message, setMessage] = useState("");
@@ -19,33 +21,34 @@ const ChatInput = ({ onSendMessage, disabled = false }: ChatInputProps) => {
   };
 
   return (
-    <div className="flex space-x-3">
-      <div className="flex-1 relative">
-        <textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={handleKeyPress}
-          placeholder="Ask me about movies ... (Press Enter to send, Shift+Enter for new line)"
-          disabled={disabled}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-          rows={Math.min(Math.max(1, message.split("\n").length), 5)}
-          style={{ minHeight: "50px" }}
-        />
-      </div>
-      <button
-        onClick={handleSend}
-        disabled={!message.trim() || disabled}
-        className="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200"
-      >
-        {disabled ? (
-          <div className="flex items-center space-x-2">
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-          </div>
-        ) : (
-          "Send"
-        )}
-      </button>
-    </div>
+    <Box pos="fixed" bottom={"5%"} left={"25%"} w="50%" mx="auto">
+      <Textarea
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        onKeyDown={handleKeyPress}
+        placeholder="Ask me about movies ... (Press Enter to send, Shift+Enter for new line)"
+        disabled={disabled}
+        rows={Math.min(Math.max(1, message.split("\n").length), 5)}
+        radius="xl"
+        autosize
+        minRows={3}
+        w="100%"
+        size="xl"
+      />
+      {message ? (
+        <Box pos="absolute" right={0}>
+          <Button
+            onClick={handleSend}
+            disabled={!message.trim() || disabled}
+            className="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200"
+          >
+            {disabled ? <Loader /> : <FiArrowUp />}
+          </Button>
+        </Box>
+      ) : (
+        <></>
+      )}
+    </Box>
   );
 };
 
