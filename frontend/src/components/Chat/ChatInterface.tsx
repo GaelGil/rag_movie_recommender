@@ -346,11 +346,9 @@ const ChatInterface = () => {
         <Container ref={messagesEndRef} />
       </Container>
 
-      {/* <div className="border-t border-gray-100"> */}
-      {/* <div className="max-w-4xl mx-auto px-8 py-6"> */}
-      <ChatInput onSendMessage={sendMessage} disabled={isLoading} />
-      {/* </div> */}
-      {/* </div> */}
+      <Container>
+        <ChatInput onSendMessage={sendMessage} disabled={isLoading} />
+      </Container>
     </>
   );
 };

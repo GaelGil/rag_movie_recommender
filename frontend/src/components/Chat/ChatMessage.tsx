@@ -2,23 +2,26 @@
 import ToolBlock from "./ToolBlock";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { Container, Text, Box, Flex } from "@mantine/core";
 import type { ChatMessageProps } from "../../types/Chat";
 
 const ChatMessage = ({ message }: ChatMessageProps) => {
   if (message.role === "user") {
     return (
-      <div className="flex justify-end">
-        <div className="max-w-[70%] bg-blue-600 text-white rounded-lg px-4 py-2">
-          <div className="prose prose-sm prose-invert max-w-none">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-              {message.content}
-            </ReactMarkdown>
-          </div>
-          <p className="text-xs text-blue-100 mt-1">
-            {message.timestamp.toLocaleTimeString()}
-          </p>
-        </div>
-      </div>
+      <Container p="md">
+        <Flex justify="flex-end">
+          <Box miw="70%" c="white" px="md" py="sm" ta={"end"}>
+            <Box style={{ maxWidth: "none" }}>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {message.content}
+              </ReactMarkdown>
+            </Box>
+            <Text size="xs" c="dimmed">
+              {message.timestamp.toLocaleTimeString()}
+            </Text>
+          </Box>
+        </Flex>
+      </Container>
     );
   }
 
@@ -27,7 +30,7 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
   const hasBlocks = blocks.length > 0;
 
   return (
-    <div className="flex justify-start">
+    <Container bg="red" p="md">
       <div className="max-w-[85%] rounded-lg border border-gray-200 overflow-hidden">
         {hasBlocks ? (
           <div className="space-y-0">
@@ -77,9 +80,9 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
             {/* footer */}
             {!message.isLoading && (
               <div className="px-4 py-2 bg-gray-50 border-t border-gray-100">
-                <p className="text-xs text-gray-500">
+                <Text size="xs" c="dimmed">
                   {message.timestamp.toLocaleTimeString()}
-                </p>
+                </Text>
               </div>
             )}
 
@@ -110,14 +113,14 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
                 </div>
               </div>
             ) : (
-              <p className="text-xs text-gray-500 mt-1">
+              <Text size="xs" c="dimmed">
                 {message.timestamp.toLocaleTimeString()}
-              </p>
+              </Text>
             )}
           </div>
         )}
       </div>
-    </div>
+    </Container>
   );
 };
 
