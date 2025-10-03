@@ -1,12 +1,7 @@
 from fastapi import APIRouter
 
-from app.api.routes import login, private, users
-from app.core.config import settings
+from app.api.routes import user, auth
 
 api_router = APIRouter()
-api_router.include_router(login.router)
-api_router.include_router(users.router)
-
-
-if settings.ENVIRONMENT == "local":
-    api_router.include_router(private.router)
+api_router.include_router(auth.router)
+api_router.include_router(user.router)

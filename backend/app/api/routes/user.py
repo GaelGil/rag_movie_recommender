@@ -1,6 +1,13 @@
 from fastapi import APIRouter, Depends
-from pydantic.networks import EmailStr
 
-from app.api.deps import get_current_active_superuser
-from app.models import Message
-from app.utils import generate_test_email, send_email
+# from sqlalchemy.orm import Session
+from app.core.db import get_db
+from app.models import User
+
+
+router = APIRouter(prefix="/users", tags=["users"])
+
+
+@router.get("/me")
+async def read_users_me(current_user: User = Depends(get_db)):
+    return current_user
