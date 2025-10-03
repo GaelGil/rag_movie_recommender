@@ -1,16 +1,22 @@
-# from typing import Optional, List, Dict
-from pydantic import BaseModel
+from __future__ import annotations
+from pydantic import BaseModel, EmailStr
+from typing import Optional
+from datetime import datetime
 import uuid
 
 
-class User(BaseModel):
+class UserBase(BaseModel):
     name: str
-    email: str
+    email: EmailStr
 
 
-class NewUserRequest(User):
-    hashed_password: str
+class UserCreate(UserBase):
+    password: str
 
 
-class NewUserResponse(User):
-    id: uuid
+class ReadUser(UserBase):
+    id: uuid.UUID
+    created_at: Optional[datetime]
+
+    class Config:
+        orm_mode = True
