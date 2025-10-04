@@ -6,7 +6,6 @@ import {
   Stack,
   Button,
 } from "@mantine/core";
-// import { useQuery } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "@mantine/form";
 import { FiLock, FiMail, FiUser } from "react-icons/fi";
@@ -22,7 +21,7 @@ export const Route = createFileRoute("/auth/signup")({
 });
 
 function SignUp() {
-  const navigate = useNavigate(); // for redirect after success
+  const navigate = useNavigate();
 
   const form = useForm({
     mode: "uncontrolled",
@@ -41,13 +40,11 @@ function SignUp() {
     },
   });
 
-  // ✅ useMutation for signup
   const signupMutation = useMutation({
     mutationFn: ({ name, email, password }: typeof form.values) =>
       signup(name, email, password),
     onSuccess: (user) => {
       console.log("✅ Signed up:", user);
-      // Redirect to login after signup
       navigate({ to: "/auth/login" });
     },
     onError: (error) => {
