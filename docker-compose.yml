@@ -21,8 +21,6 @@ services:
       dockerfile: backend/Dockerfile
     ports:
       - "8000:8000"
-    volumes:
-      - ./backend/app:/app/app
     env_file:
       - ./backend/.env
     environment:
@@ -32,7 +30,9 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       # FastAPI debugging
       - DEBUG=1
-
+    # Ensure all logs are captured
+    volumes:
+      - ./backend/app:/app/app
     logging:
       driver: "json-file"
       options:
