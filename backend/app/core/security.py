@@ -21,4 +21,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 def get_password_hash(password: str) -> str:
+    print("🔑 Raw password:", password)
+    print("🔑 Password length (chars):", len(password))
+    # print("🔑 Password length (bytes):", len(pw_bytes))
     return pwd_context.hash(password)

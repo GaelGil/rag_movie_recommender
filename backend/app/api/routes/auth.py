@@ -24,7 +24,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
     "/signup", response_model=SignUpResponse, status_code=status.HTTP_201_CREATED
 )
 def signup(signup_request: SignUpRequest, db: Session = Depends(get_db)):
-    # check existing user
+    print("Password length:", len(signup_request.password))
     existing = db.query(User).filter(User.email == signup_request.email).first()
     if existing:
         raise HTTPException(
