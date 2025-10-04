@@ -29,21 +29,17 @@ export const login = async (username: string, password: string) => {
   return data;
 };
 
-export const signup = async (
-  username: string,
-  email: string,
-  password: string
-) => {
-  const res = await fetch(`${BASE_URL}/signup`, {
+export const signup = async (name: string, email: string, password: string) => {
+  const res = await fetch(`${BASE_URL}/auth/signup`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Content-Type": "application/json", // ✅ Important for Flask to parse JSON
     },
-    body: JSON.stringify({ username, email, password }),
+    body: JSON.stringify({ name, email, password }),
   });
   if (!res.ok) {
-    return new Error("Error");
+    return new Error("Sign Up Failed");
   }
   const data = await res.json();
   return data;

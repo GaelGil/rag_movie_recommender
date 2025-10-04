@@ -6,15 +6,24 @@ import {
   Stack,
   Button,
 } from "@mantine/core";
+// import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "@mantine/form";
 import { FiLock, FiMail, FiUser } from "react-icons/fi";
 import { PROJECT_LOGO } from "../../data/ProjectLogo";
-import { createFileRoute, Link as RouterLink } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link as RouterLink,
+  useNavigate,
+} from "@tanstack/react-router";
+import { signup } from "../../api/auth";
 export const Route = createFileRoute("/auth/signup")({
   component: SignUp,
 });
 
 function SignUp() {
+  const navigate = useNavigate(); // for redirect after success
+
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
@@ -32,6 +41,24 @@ function SignUp() {
     },
   });
 
+  // ✅ useMutation for signup
+  const signupMutation = useMutation({
+    mutationFn: ({ name, email, password }: typeof form.values) =>
+      signup(name, email, password),
+    onSuccess: (user) => {
+      console.log("✅ Signed up:", user);
+      // Redirect to login after signup
+      navigate({ to: "/auth/login" });
+    },
+    onError: (error) => {
+      console.error("Signup failed:", error);
+    },
+  });
+
+  const handleSubmit = (values: typeof form.values) => {
+    signupMutation.mutate(values); // triggers signup
+  };
+
   return (
     <Container
       size="xs"
@@ -39,7 +66,7 @@ function SignUp() {
       align-items="center"
       pt={"xl"}
     >
-      <form onSubmit={form.onSubmit((values) => console.log(values))}>
+      <form onSubmit={form.onSubmit(handleSubmit)}>
         {" "}
         <Stack pt={"xl"}>
           <Image src={PROJECT_LOGO} alt="FastAPI logo" maw={120} mx="auto" />
@@ -64,6 +91,7 @@ function SignUp() {
           <TextInput
             withAsterisk
             label="Password"
+            type="password"
             leftSection={<FiLock size={20} />}
             placeholder="Password"
             key={form.key("password")}
