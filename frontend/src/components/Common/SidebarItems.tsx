@@ -3,15 +3,13 @@
 import { Box, Group, Text } from "@mantine/core";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link as RouterLink } from "@tanstack/react-router";
-import { FiHome, FiSettings, FiUsers, FiImage, FiEdit2 } from "react-icons/fi";
+import { FiHome, FiSettings, FiUsers } from "react-icons/fi";
 import type { IconType } from "react-icons/lib";
 
 import type { UserPublic } from "@/client";
 
 const items = [
   { icon: FiHome, title: "Home", path: "/dashboard" },
-  { icon: FiEdit2, title: "Canvases", path: "/dashboard/canvases" },
-  { icon: FiImage, title: "Gallery", path: "/dashboard/gallery" },
   { icon: FiSettings, title: "User Settings", path: "/dashboard/settings" },
 ];
 
