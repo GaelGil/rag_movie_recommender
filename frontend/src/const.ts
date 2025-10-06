@@ -1,4 +1,4 @@
 export const PROJECT_NAME = "Movie Recommender";
-import Logo from "/assets/images/fastapi-logo.svg";
+import Logo from "/assets/images/logo.svg";
 
 export const LOGO = Logo;
