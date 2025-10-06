@@ -1,17 +1,19 @@
+// routes/index.tsx
 import { createFileRoute } from "@tanstack/react-router";
-import Navbar from "../components/Layout/NavBar";
-import HomeBanner from "../components/Home/HomeBanner";
-import Footer from "../components/Layout/Footer";
-
+import HomeBanner from "../components/Common/Home/HomeBanner";
+import Footer from "../components/Common/Layout/Footer";
+import Navbar from "../components/Common/Layout/HomeNav";
 export const Route = createFileRoute("/")({
-  component: RouteComponent,
+  component: HomePage,
 });
 
-function RouteComponent() {
+function HomePage() {
   return (
     <>
       <Navbar />
+
       <HomeBanner />
+
       <Footer />
     </>
   );

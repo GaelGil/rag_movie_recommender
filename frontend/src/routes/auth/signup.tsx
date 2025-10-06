@@ -1,59 +1,92 @@
-import {
-  Container,
-  Text,
-  Image,
-  TextInput,
-  Stack,
-  Button,
-} from "@mantine/core";
-import { useMutation } from "@tanstack/react-query";
-import { useForm } from "@mantine/form";
-import { FiLock, FiMail, FiUser } from "react-icons/fi";
-import { PROJECT_LOGO } from "../../data/ProjectLogo";
+"use client";
+
+import { Container, Text, Image, Input, Stack } from "@mantine/core";
 import {
   createFileRoute,
   Link as RouterLink,
-  useNavigate,
+  redirect,
 } from "@tanstack/react-router";
-import { signup } from "../../api/auth";
+import { FiLock, FiUser } from "react-icons/fi";
+
+import type { UserRegister } from "@/client";
+import { Button } from "@/components/ui/button";
+import { Field } from "@/components/ui/field";
+import { InputGroup } from "@/components/ui/input-group";
+import { PasswordInput } from "@/components/ui/password-input";
+import useAuth, { isLoggedIn } from "@/hooks/useAuth";
+import { confirmPasswordRules, emailPattern, passwordRules } from "@/utils";
+import Logo from "/assets/images/fastapi-logo.svg";
+
+import { useForm } from "@mantine/form";
+
 export const Route = createFileRoute("/auth/signup")({
   component: SignUp,
+  beforeLoad: async () => {
+    if (isLoggedIn()) {
+      throw redirect({
+        to: "/",
+      });
+    }
+  },
 });
 
-function SignUp() {
-  const navigate = useNavigate();
+interface UserRegisterForm extends UserRegister {
+  confirm_password: string;
+}
 
-  const form = useForm({
-    mode: "uncontrolled",
+function SignUp() {
+  const { signUpMutation } = useAuth();
+
+  // Build Mantine form and re-use your emailPattern and helpers
+  const form = useForm<UserRegisterForm>({
+    // validate on blur to mimic react-hook-form's mode: "onBlur"
+    validateInputOnBlur: true,
     initialValues: {
       email: "",
-      name: "",
+      full_name: "",
       password: "",
+      confirm_password: "",
     },
-
     validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
-      password: (value) =>
-        value.length < 8 ? "Password should be at least 8 characters" : null,
-      name: (value) =>
-        value.length < 3 ? "Name should be at least 3 characters" : null,
+      full_name: (value) => {
+        if (!value || value.trim().length < 3) return "Full Name is required";
+        return null;
+      },
+
+      email: (value) =>
+        emailPattern.value.test(value) ? null : emailPattern.message,
+      password: (value) => {
+        const rule = passwordRules();
+        return value.length >= 8
+          ? null
+          : (rule.minLength?.message ??
+              "Password must be at least 8 characters");
+      },
+      confirm_password: (value, values) => {
+        const rule = confirmPasswordRules(() => values.password);
+        return value === values.password
+          ? null
+          : (rule.validate?.(value, values) ?? "Passwords do not match");
+      },
     },
   });
 
-  const signupMutation = useMutation({
-    mutationFn: ({ name, email, password }: typeof form.values) =>
-      signup(name, email, password),
-    onSuccess: (user) => {
-      console.log("✅ Signed up:", user);
-      navigate({ to: "/auth/login" });
-    },
-    onError: (error) => {
-      console.error("Signup failed:", error);
-    },
-  });
+  // Convert Mantine errors into react-hook-form-like shape (so your custom components keep working)
+  const rhfErrors: Record<string, any> = {
+    full_name: form.errors.full_name
+      ? { message: form.errors.full_name }
+      : undefined,
+    email: form.errors.email ? { message: form.errors.email } : undefined,
+    password: form.errors.password
+      ? { message: form.errors.password }
+      : undefined,
+    confirm_password: form.errors.confirm_password
+      ? { message: form.errors.confirm_password }
+      : undefined,
+  };
 
-  const handleSubmit = (values: typeof form.values) => {
-    signupMutation.mutate(values); // triggers signup
+  const handleSubmit = (values: UserRegisterForm) => {
+    signUpMutation.mutate(values);
   };
 
   return (
@@ -63,50 +96,65 @@ function SignUp() {
       align-items="center"
       pt={"xl"}
     >
-      <form onSubmit={form.onSubmit(handleSubmit)}>
-        {" "}
+      <form onSubmit={form.onSubmit(handleSubmit)} style={{ width: "100%" }}>
         <Stack pt={"xl"}>
-          <Image src={PROJECT_LOGO} alt="FastAPI logo" maw={120} mx="auto" />
+          <Image src={Logo} alt="FastAPI logo" maw={120} mx="auto" />
+          <Field errorText={rhfErrors.full_name?.message}>
+            <InputGroup w="100%" startElement={<FiUser />}>
+              <Input
+                minLength={3}
+                placeholder="Full Name"
+                type="text"
+                key={form.key("full_name")}
+                {...form.getInputProps("full_name")}
+              />
+            </InputGroup>
+          </Field>
 
-          <TextInput
-            withAsterisk
-            label="Name"
-            leftSection={<FiUser size={20} />}
-            placeholder="Name"
-            key={form.key("name")}
-            {...form.getInputProps("name")}
-          />
-          <TextInput
-            withAsterisk
-            label="Email"
-            leftSection={<FiMail size={20} />}
-            placeholder="your@email.com"
-            key={form.key("email")}
-            {...form.getInputProps("email")}
-          />
+          <Field errorText={rhfErrors.email?.message}>
+            <InputGroup w="100%" startElement={<FiUser />}>
+              <Input
+                placeholder="Email"
+                type="email"
+                key={form.key("email")}
+                {...form.getInputProps("email")}
+              />
+            </InputGroup>
+          </Field>
 
-          <TextInput
-            withAsterisk
-            label="Password"
+          <PasswordInput
             type="password"
-            leftSection={<FiLock size={20} />}
+            startElement={<FiLock />}
             placeholder="Password"
             key={form.key("password")}
             {...form.getInputProps("password")}
+            errors={rhfErrors}
+          />
+
+          <PasswordInput
+            type="confirm_password"
+            startElement={<FiLock />}
+            placeholder="Confirm Password"
+            key={form.key("confirm_password")}
+            {...form.getInputProps("confirm_password")}
+            errors={rhfErrors}
           />
 
           <Button
             variant="solid"
-            type="submit"
-            // loading={isSubmitting}
+            loading={signUpMutation.isPending}
             size="md"
+            type="submit"
           >
             Sign Up
           </Button>
 
-          <Text ta="center" size="sm">
-            Don&apos;t have an account?{" "}
-            <RouterLink to="/auth/login" color="blue">
+          <Text>
+            Already have an account?{" "}
+            <RouterLink
+              to="/auth/login"
+              style={{ color: "var(--mantine-color-blue-filled)" }}
+            >
               Log In
             </RouterLink>
           </Text>
@@ -115,3 +163,4 @@ function SignUp() {
     </Container>
   );
 }
+

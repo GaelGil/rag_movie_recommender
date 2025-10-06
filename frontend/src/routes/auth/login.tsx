@@ -1,34 +1,59 @@
+"use client";
+
+import { Container, Text, Image, Input, Stack } from "@mantine/core";
 import {
-  Container,
-  Text,
-  Image,
-  TextInput,
-  Stack,
-  Button,
-} from "@mantine/core";
-import { useForm } from "@mantine/form";
+  createFileRoute,
+  Link as RouterLink,
+  redirect,
+} from "@tanstack/react-router";
+import { type SubmitHandler, useForm } from "react-hook-form";
+import type { Body_login_login_access_token as AccessToken } from "@/client";
 import { FiLock, FiMail } from "react-icons/fi";
-import { PROJECT_LOGO } from "../../data/ProjectLogo";
-// import { signup } from "../../api/auth";
-import { createFileRoute, Link as RouterLink } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { Field } from "@/components/ui/field";
+import { InputGroup } from "@/components/ui/input-group";
+import { PasswordInput } from "@/components/ui/password-input";
+import useAuth, { isLoggedIn } from "@/hooks/useAuth";
+import Logo from "/assets/images/fastapi-logo.svg";
+import { emailPattern, passwordRules } from "../../utils";
+
 export const Route = createFileRoute("/auth/login")({
-  component: LogIn,
+  component: Login,
+  beforeLoad: async () => {
+    if (isLoggedIn()) {
+      throw redirect({
+        to: "/dashboard",
+      });
+    }
+  },
 });
 
-function LogIn() {
-  const form = useForm({
-    mode: "uncontrolled",
-    initialValues: {
-      email: "",
+function Login() {
+  const { loginMutation, error, resetError } = useAuth();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<AccessToken>({
+    mode: "onBlur",
+    criteriaMode: "all",
+    defaultValues: {
+      username: "",
       password: "",
     },
-
-    validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
-      password: (value) =>
-        value.length < 8 ? "Password should be at least 8 characters" : null,
-    },
   });
+
+  const onSubmit: SubmitHandler<AccessToken> = async (data) => {
+    if (isSubmitting) return;
+
+    resetError();
+
+    try {
+      await loginMutation.mutateAsync(data);
+    } catch {
+      // handled by useAuth
+    }
+  };
 
   return (
     <Container
@@ -37,33 +62,41 @@ function LogIn() {
       align-items="center"
       pt={"xl"}
     >
-      <form onSubmit={form.onSubmit((values) => console.log(values))}>
-        {" "}
+      <form onSubmit={handleSubmit(onSubmit)} style={{ width: "100%" }}>
         <Stack pt={"xl"}>
-          <Image src={PROJECT_LOGO} alt="FastAPI logo" maw={120} mx="auto" />
+          <Image src={Logo} alt="FastAPI logo" maw={120} mx="auto" />
 
-          <TextInput
-            withAsterisk
-            label="Email"
-            leftSection={<FiMail size={20} />}
-            placeholder="your@email.com"
-            key={form.key("email")}
-            {...form.getInputProps("email")}
-          />
+          <Field errorText={errors.username?.message || !!error}>
+            <InputGroup w="100%" startElement={<FiMail />}>
+              <Input
+                {...register("username", {
+                  required: "Username is required",
+                  pattern: emailPattern,
+                })}
+                placeholder="Email"
+                type="email"
+              />
+            </InputGroup>
+          </Field>
 
-          <TextInput
-            withAsterisk
-            label="Password"
-            leftSection={<FiLock size={20} />}
+          <PasswordInput
+            type="password"
+            startElement={<FiLock />}
+            {...register("password", passwordRules())}
             placeholder="Password"
-            key={form.key("password")}
-            {...form.getInputProps("password")}
+            errors={errors}
           />
 
+          <RouterLink
+            to="/auth/recover-password"
+            style={{ fontSize: "0.875rem" }}
+          >
+            Forgot Password?
+          </RouterLink>
           <Button
             variant="solid"
             type="submit"
-            // loading={isSubmitting}
+            loading={isSubmitting}
             size="md"
           >
             Log In
@@ -71,7 +104,10 @@ function LogIn() {
 
           <Text ta="center" size="sm">
             Don&apos;t have an account?{" "}
-            <RouterLink to="/auth/signup" color="blue">
+            <RouterLink
+              to="/auth/signup"
+              style={{ color: "var(--mantine-color-blue-filled)" }}
+            >
               Sign Up
             </RouterLink>
           </Text>
