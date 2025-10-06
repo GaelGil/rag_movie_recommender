@@ -15,7 +15,7 @@ import { InputGroup } from "@/components/ui/input-group";
 import { PasswordInput } from "@/components/ui/password-input";
 import useAuth, { isLoggedIn } from "@/hooks/useAuth";
 import { confirmPasswordRules, emailPattern, passwordRules } from "@/utils";
-import Logo from "/assets/images/fastapi-logo.svg";
+import { LOGO } from "@/const";
 
 import { useForm } from "@mantine/form";
 
@@ -98,7 +98,7 @@ function SignUp() {
     >
       <form onSubmit={form.onSubmit(handleSubmit)} style={{ width: "100%" }}>
         <Stack pt={"xl"}>
-          <Image src={Logo} alt="FastAPI logo" maw={120} mx="auto" />
+          <Image src={LOGO} alt="FastAPI logo" maw={120} mx="auto" />
           <Field errorText={rhfErrors.full_name?.message}>
             <InputGroup w="100%" startElement={<FiUser />}>
               <Input
