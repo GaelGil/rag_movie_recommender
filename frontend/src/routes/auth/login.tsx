@@ -9,6 +9,7 @@ import {
 import { useForm } from "@mantine/form";
 import { FiLock, FiMail } from "react-icons/fi";
 import { PROJECT_LOGO } from "../../data/ProjectLogo";
+// import { signup } from "../../api/auth";
 import { createFileRoute, Link as RouterLink } from "@tanstack/react-router";
 export const Route = createFileRoute("/auth/login")({
   component: LogIn,

@@ -101,7 +101,7 @@ function SignUp() {
             // loading={isSubmitting}
             size="md"
           >
-            Log In
+            Sign Up
           </Button>
 
           <Text ta="center" size="sm">

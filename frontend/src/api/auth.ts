@@ -10,14 +10,14 @@ export const getCurrentUser = async () => {
   return await res.json(); // { id, username, email }
 };
 
-export const login = async (username: string, password: string) => {
+export const login = async (name: string, password: string) => {
   const res = await fetch(`${BASE_URL}/login`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Content-Type": "application/json", // ✅ Important for Flask to parse JSON
     },
-    body: JSON.stringify({ username, password }),
+    body: JSON.stringify({ name, password }),
   });
 
   if (!res.ok) {
@@ -30,11 +30,13 @@ export const login = async (username: string, password: string) => {
 };
 
 export const signup = async (name: string, email: string, password: string) => {
+console.log("🔗 Signup URL:", `${BASE_URL}/auth/signup`);
+  
   const res = await fetch(`${BASE_URL}/auth/signup`, {
     method: "POST",
-    credentials: "include",
+    // credentials: "include",
     headers: {
-      "Content-Type": "application/json", // ✅ Important for Flask to parse JSON
+      "Content-Type": "application/json", 
     },
     body: JSON.stringify({ name, email, password }),
   });
