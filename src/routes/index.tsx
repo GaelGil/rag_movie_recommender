@@ -1,7 +1,7 @@
 // routes/index.tsx
+import { Container, SimpleGrid, Text, Box } from "@mantine/core";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-import { Container, Box, Text } from "@mantine/core";
 type Node = {
   id: string;
   label: string;
@@ -34,24 +34,14 @@ const data: GraphData = {
 };
 function Graph3D() {
   return (
-    <Container
-      fluid
-      style={{ display: "flex", flexDirection: "column" }}
-      w="75%"
-      h="100%"
-    >
-      <Box
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        px="md"
-        w="100%"
-        display={"flex"}
-      >
-        <Text c="red">Graph 3D</Text>
-      </Box>
+    <Container w="100%" bg="red">
+      <SimpleGrid cols={100} spacing={0} verticalSpacing={0}>
+        {data.nodes.map((node) => (
+          <Box key={node.id} bd={"1px solid black"}>
+            <Text>{node.label}</Text>
+          </Box>
+        ))}
+      </SimpleGrid>
     </Container>
   );
 }
