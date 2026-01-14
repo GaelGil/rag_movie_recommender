@@ -1,10 +1,7 @@
 // routes/index.tsx
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-// import { useRef } from "react";
-import ForceGraph3D from "react-force-graph-3d";
-import { WebGLRenderer } from "three";
-// import SpriteText from "three-spritetext";
+import { Container, Box, Text } from "@mantine/core";
 type Node = {
   id: string;
   label: string;
@@ -35,15 +32,26 @@ const data: GraphData = {
     { source: "a", target: "c" },
   ],
 };
-// import { WebGLRenderer } from "three";
 function Graph3D() {
-  // const fgRef = useRef<ForceGraphMethods>();
-
   return (
-    <ForceGraph3D
-      rendererConfig={{ antialias: true }}
-      renderer={new WebGLRenderer()}
-      graphData={{ nodes: [{ id: 1 }], links: [] }}
-    />
+    <Container
+      fluid
+      style={{ display: "flex", flexDirection: "column" }}
+      w="75%"
+      h="100%"
+    >
+      <Box
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        px="md"
+        w="100%"
+        display={"flex"}
+      >
+        <Text c="red">Graph 3D</Text>
+      </Box>
+    </Container>
   );
 }
