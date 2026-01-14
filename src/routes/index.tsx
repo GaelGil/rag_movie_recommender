@@ -1,53 +1,49 @@
 // routes/index.tsx
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useDisclosure } from "@mantine/hooks";
-import { AppShell, Anchor, Group } from "@mantine/core";
-import { Button } from "@/components/ui/button";
-import HomeBanner from "../components/Common/Home/HomeBanner";
-import { isLoggedIn } from "@/hooks/useAuth";
-import HomeSideBar from "../components/Common/Home/HomeSideBar";
+
+// import { useRef } from "react";
+import ForceGraph3D from "react-force-graph-3d";
+import { WebGLRenderer } from "three";
+// import SpriteText from "three-spritetext";
+type Node = {
+  id: string;
+  label: string;
+};
+
+type Link = {
+  source: string;
+  target: string;
+};
+
+type GraphData = {
+  nodes: Node[];
+  links: Link[];
+};
+
 export const Route = createFileRoute("/")({
-  component: HomePage,
+  component: Graph3D,
 });
 
-function HomePage() {
-  const loggedIn = isLoggedIn();
-  const [collapsed, { toggle: toggleCollapsed }] = useDisclosure(false);
-
-  const fullWidth = 200;
-  const collapsedWidth = 60;
-
-  const sidebarWidth = collapsed ? collapsedWidth : fullWidth;
+const data: GraphData = {
+  nodes: [
+    { id: "a", label: "A" },
+    { id: "b", label: "B" },
+    { id: "c", label: "C" },
+  ],
+  links: [
+    { source: "a", target: "b" },
+    { source: "a", target: "c" },
+  ],
+};
+// import { WebGLRenderer } from "three";
+function Graph3D() {
+  // const fgRef = useRef<ForceGraphMethods>();
 
   return (
-    <AppShell
-      layout="alt"
-      header={{ height: 60 }}
-      navbar={{
-        width: sidebarWidth,
-        breakpoint: "sm",
-        collapsed: { mobile: false, desktop: false },
-      }}
-      padding="md"
-      bg={"black"}
-    >
-      <AppShell.Header withBorder={false} bg={"black"}>
-        <Group h="100%" px="md" justify="flex-end">
-          <Anchor
-            component={Link}
-            to={loggedIn ? "/chat" : "/auth/login"}
-            underline="never"
-          >
-            <Button radius="xl">{loggedIn ? "Chat" : "Login"}</Button>
-          </Anchor>
-        </Group>
-      </AppShell.Header>
-      <AppShell.Navbar p="md" withBorder={false} bg={"black"}>
-        <HomeSideBar collapsed={collapsed} toggle={toggleCollapsed} />
-      </AppShell.Navbar>
-      <AppShell.Main>
-        <HomeBanner />
-      </AppShell.Main>
-    </AppShell>
+    <ForceGraph3D
+      rendererConfig={{ antialias: true }}
+      renderer={new WebGLRenderer()}
+      graphData={{ nodes: [{ id: 1 }], links: [] }}
+    />
   );
 }
