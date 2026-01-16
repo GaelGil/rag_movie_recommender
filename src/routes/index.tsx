@@ -1,12 +1,11 @@
-import { Container, SimpleGrid, Box, AppShell, Group } from "@mantine/core";
+import { Container, AppShell, Group } from "@mantine/core";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import ItemMenu from "@/components/Common/ItemMenu";
+
+import Grid from "@/components/Common/Grid";
 export const Route = createFileRoute("/")({
   component: Graph3D,
 });
-const n = 10000;
-const grid = Array.from({ length: n }, () => Array(50).fill(" ")); // generate array
 
 function Graph3D() {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
@@ -33,26 +32,12 @@ function Graph3D() {
         </Container>
       </AppShell.Header>
       <AppShell.Main>
-        <SimpleGrid cols={100} spacing={0} verticalSpacing={0}>
-          {grid.map((_, idx) => (
-            <Box
-              key={idx}
-              bd={"1px solid black"}
-              h={10}
-              w={10}
-              p={0}
-              m={0}
-              onClick={() => handleClick(idx)}
-            >
-              {isOpen && hoveredId === String(idx) && (
-                <ItemMenu
-                  value={String(idx)}
-                  onClose={() => setIsOpen(false)}
-                />
-              )}
-            </Box>
-          ))}
-        </SimpleGrid>
+        <Grid
+          hoveredId={hoveredId}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          handleClick={handleClick}
+        />
       </AppShell.Main>
     </AppShell>
   );
