@@ -45,7 +45,10 @@ function Graph3D() {
               onClick={() => handleClick(idx)}
             >
               {isOpen && hoveredId === String(idx) && (
-                <ItemMenu value={String(idx)} />
+                <ItemMenu
+                  value={String(idx)}
+                  onClose={() => setIsOpen(false)}
+                />
               )}
             </Box>
           ))}
