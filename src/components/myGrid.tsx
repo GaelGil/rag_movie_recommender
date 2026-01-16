@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import Plotly from "plotly.js-dist-min";
 import * as d3 from "d3";
+import { Box } from "@mantine/core";
 
 export const Scatter3DPlot: React.FC = () => {
   const plotRef = useRef<HTMLDivElement>(null);
@@ -47,10 +48,10 @@ export const Scatter3DPlot: React.FC = () => {
             zaxis: { type: "linear", zeroline: false },
           },
           title: { text: "3D Point Clustering" },
-          margin: { l: 0, r: 0, b: 0, t: 0, pad: 4 },
+          //   margin: { l: 0, r: 0, b: 0, t: 0, pad: 4 },
           showlegend: false,
-          paper_bgcolor: "rgb(0,0,0)",
-          plot_bgcolor: "rgb(0,0,0)",
+          paper_bgcolor: "rgba(255, 16, 16, 0)",
+          plot_bgcolor: "rgb(38, 255, 0)",
         };
 
         // render plot
@@ -61,5 +62,7 @@ export const Scatter3DPlot: React.FC = () => {
       .catch((err) => console.error(err));
   }, []);
 
-  return <div ref={plotRef} style={{ width: "100%", height: "480px" }} />;
+  return (
+    <Box m={0} p={0} ref={plotRef} style={{ width: "100%", height: "480px" }} />
+  );
 };
