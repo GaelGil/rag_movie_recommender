@@ -1,7 +1,7 @@
 import { Container, AppShell, Group } from "@mantine/core";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-
+import { Scatter3DPlot } from "@/components/myGrid";
 import Grid from "@/components/Common/Grid";
 export const Route = createFileRoute("/")({
   component: Graph3D,
@@ -32,12 +32,13 @@ function Graph3D() {
         </Container>
       </AppShell.Header>
       <AppShell.Main>
-        <Grid
+        {/* <Grid
           hoveredId={hoveredId}
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           handleClick={handleClick}
-        />
+        /> */}
+        <Scatter3DPlot />
       </AppShell.Main>
     </AppShell>
   );
