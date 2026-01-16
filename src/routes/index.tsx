@@ -1,47 +1,36 @@
-// routes/index.tsx
-import { Container, SimpleGrid, Text, Box } from "@mantine/core";
+import { Container, SimpleGrid, Box, AppShell, Group } from "@mantine/core";
 import { createFileRoute, Link } from "@tanstack/react-router";
-
-type Node = {
-  id: string;
-  label: string;
-};
-
-type Link = {
-  source: string;
-  target: string;
-};
-
-type GraphData = {
-  nodes: Node[];
-  links: Link[];
-};
 
 export const Route = createFileRoute("/")({
   component: Graph3D,
 });
+const n = 10000;
+const grid = Array.from({ length: n }, () => Array(50).fill(" ")); // generate array
 
-const data: GraphData = {
-  nodes: [
-    { id: "a", label: "A" },
-    { id: "b", label: "B" },
-    { id: "c", label: "C" },
-  ],
-  links: [
-    { source: "a", target: "b" },
-    { source: "a", target: "c" },
-  ],
-};
 function Graph3D() {
   return (
-    <Container w="100%" bg="red">
-      <SimpleGrid cols={100} spacing={0} verticalSpacing={0}>
-        {data.nodes.map((node) => (
-          <Box key={node.id} bd={"1px solid black"}>
-            <Text>{node.label}</Text>
-          </Box>
-        ))}
-      </SimpleGrid>
-    </Container>
+    <AppShell layout="alt" header={{ height: 60 }} padding="md">
+      <AppShell.Header>
+        <Container>
+          <Group h="100%" p="md" justify="flex-start">
+            <Link to="/">Home</Link>{" "}
+          </Group>
+        </Container>
+      </AppShell.Header>
+      <AppShell.Main>
+        <SimpleGrid cols={100} spacing={0} verticalSpacing={0}>
+          {grid.map((_, idx) => (
+            <Box
+              key={idx}
+              bd={"1px solid black"}
+              h="10px"
+              w="10px"
+              p={0}
+              m={0}
+            ></Box>
+          ))}
+        </SimpleGrid>
+      </AppShell.Main>
+    </AppShell>
   );
 }
