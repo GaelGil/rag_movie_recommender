@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import Plotly from "plotly.js-dist-min";
 import * as d3 from "d3";
-import { Box } from "@mantine/core";
+import { Box, Container } from "@mantine/core";
 
 export const Scatter3DPlot: React.FC = () => {
   const plotRef = useRef<HTMLDivElement>(null);
@@ -35,7 +35,7 @@ export const Scatter3DPlot: React.FC = () => {
 
         const layout: Partial<Plotly.Layout> = {
           autosize: true,
-          height: 480,
+          height: 500,
           scene: {
             aspectratio: { x: 1, y: 1, z: 1 },
             camera: {
@@ -62,7 +62,5 @@ export const Scatter3DPlot: React.FC = () => {
       .catch((err) => console.error(err));
   }, []);
 
-  return (
-    <Box m={0} p={0} ref={plotRef} style={{ width: "100%", height: "480px" }} />
-  );
+  return <Container bg="red" w="100%" h="500px" ref={plotRef} />;
 };
