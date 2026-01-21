@@ -1,15 +1,15 @@
 import React, { useEffect, useRef } from "react";
 import Plotly from "plotly.js-dist-min";
 import * as d3 from "d3";
-import { Box, Container } from "@mantine/core";
+import { Container } from "@mantine/core";
 
-export const Scatter3DPlot: React.FC = () => {
+export const ScatterPlot: React.FC = () => {
   const plotRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // load CSV data
     d3.csv(
-      "https://raw.githubusercontent.com/plotly/datasets/master/alpha_shape.csv"
+      "https://raw.githubusercontent.com/plotly/datasets/master/alpha_shape.csv",
     )
       .then((rows) => {
         const unpack = (rows: any[], key: string) =>
